@@ -461,6 +461,7 @@ def run_xfstests_one_client(ctx, role, properties):
             '{tdir}/binary/usr/local/bin/ceph-coverage'.format(tdir=testdir),
             '{tdir}/archive/coverage'.format(tdir=testdir),
             '/usr/bin/sudo',
+            'TESTDIR={tdir}'.format(tdir=testdir),
             '/bin/bash',
             test_path,
             '-c', str(count),
