@@ -285,7 +285,7 @@ class FOG(object):
         with safe_while(sleep=6, timeout=config.fog_wait_for_ssh_timeout) as proceed:
             while proceed():
                 try:
-                    self.remote.connect()
+                    self.remote.connect(verify_host_key=False)
                     break
                 except (
                     socket.error,

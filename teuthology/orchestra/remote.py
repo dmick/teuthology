@@ -4,6 +4,7 @@ Support for paramiko remote objects.
 
 import teuthology.lock.query
 import teuthology.lock.util
+from teuthology.config import config
 from teuthology.contextutil import safe_while
 from teuthology.orchestra import run
 from teuthology.orchestra import connection
@@ -382,7 +383,7 @@ class Remote(RemoteShell):
         if self._reimage_types is None:
             Remote._reimage_types = teuthology.provision.get_reimage_types()
 
-    def connect(self, timeout=None, create_key=None, context='connect'):
+    def connect(self, timeout=None, create_key=None, context='connect', verify_host_key=True):
         args = dict(user_at_host=self.name, host_key=self._host_key,
                     keep_alive=self.keep_alive, _create_key=create_key)
         if context == 'reconnect':
@@ -396,7 +397,13 @@ class Remote(RemoteShell):
         if timeout:
             args['timeout'] = timeout
 
+        saved_verify = None
+        if not verify_host_key:
+            saved_verify = config.verify_host_keys
+            config.verify_host_keys = False
         self.ssh = connection.connect(**args)
+        if saved_verify:
+            config.verify_host_keys = saved_verify
         return self.ssh
 
     def reconnect(self, timeout=30, socket_timeout=None):
