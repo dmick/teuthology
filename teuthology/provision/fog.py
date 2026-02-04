@@ -268,6 +268,7 @@ class FOG(object):
         with safe_while(sleep=15, tries=120, timeout=config.fog_reimage_timeout) as proceed:
             while proceed():
                 if not self.deploy_task_active(task_id):
+                    self.log.debug(f'fog says deploy task {task_id} no longer active')
                     break
 
     def cancel_deploy_task(self,  task_id):
